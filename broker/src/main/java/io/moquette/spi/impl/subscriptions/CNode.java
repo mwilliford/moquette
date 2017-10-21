@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 class CNode {
 
@@ -31,19 +29,15 @@ class CNode {
     //private int subtreeSubscriptions;
 
     CNode() {
-        ConcurrentHashMap<Subscription, Object> cmap = new ConcurrentHashMap<Subscription, Object>();
-        subscriptions = cmap.newKeySet();
-        children = new CopyOnWriteArrayList<>();
+        subscriptions = new HashSet<>();
+        children = new ArrayList<>();
     }
 
     //Copy constructor
     private CNode(Token token, List<INode> children, Set<Subscription> subscriptions) {
-        ConcurrentHashMap<Subscription, Integer> cmap = new ConcurrentHashMap<Subscription, Integer>();
-        this.subscriptions = cmap.newKeySet();
-        this.subscriptions.addAll(subscriptions);
-
+        this.subscriptions = new HashSet<>(subscriptions);
         this.token = token;
-        this.children = new CopyOnWriteArrayList<>(children);
+        this.children = new ArrayList<>(children);
     }
 
     boolean anyChildrenMatch(Token token) {
