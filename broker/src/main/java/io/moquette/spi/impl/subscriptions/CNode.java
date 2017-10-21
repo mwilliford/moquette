@@ -26,17 +26,15 @@ class CNode {
     private List<INode> children;
     Set<Subscription> subscriptions;
 
-    //private int subtreeSubscriptions;
-
     CNode() {
-        subscriptions = new HashSet<>();
-        children = new ArrayList<>();
+        this.children = new ArrayList<>();
+        this.subscriptions = new HashSet<>();
     }
 
     //Copy constructor
     private CNode(Token token, List<INode> children, Set<Subscription> subscriptions) {
+        this.token = token; // keep reference, root comparison in directory logic relies on it for now.
         this.subscriptions = new HashSet<>(subscriptions);
-        this.token = token;
         this.children = new ArrayList<>(children);
     }
 
