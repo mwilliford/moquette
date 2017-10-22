@@ -31,6 +31,7 @@ public class CTrieSubscriptionDirectory implements ISubscriptionsDirectory {
     private static final Logger LOG = LoggerFactory.getLogger(CTrieSubscriptionDirectory.class);
 
     private static final Token ROOT = new Token("root");
+    private static final INode NO_PARENT = null;
 
     INode root;
     private volatile SessionsRepository sessionsRepository;
@@ -226,7 +227,6 @@ public class CTrieSubscriptionDirectory implements ISubscriptionsDirectory {
     }
 
     private Action insert(String clientId, Topic topic, final INode inode, Topic fullpath) {
-
          Token token = topic.headToken();
         if (!topic.isEmpty() && inode.mainNode().anyChildrenMatch(token)) {
             Topic remainingTopic = topic.exceptHeadToken();
@@ -293,7 +293,7 @@ public class CTrieSubscriptionDirectory implements ISubscriptionsDirectory {
     public void removeSubscription(Topic topic, String clientID) {
         Action res;
         do {
-            res = remove(clientID, topic, this.root, null);
+            res = remove(clientID, topic, this.root, NO_PARENT);
         } while (res == Action.REPEAT);
     }
 
@@ -311,7 +311,8 @@ public class CTrieSubscriptionDirectory implements ISubscriptionsDirectory {
                 // Consider calling cleanTomb here too
                 return Action.OK;
             }
-            if (cnode.containsOnly(clientId) && topic.isEmpty()) {  // last client to leave this node, remove via TNode tomb
+            if (cnode.containsOnly(clientId) && topic.isEmpty() && cnode.allChildren().isEmpty()) {
+                // last client to leave this node, AND there are no downstream children, remove via TNode tomb
                 if (inode == this.root) {
                     return inode.compareAndSet(cnode, inode.mainNode().copy()) ? Action.OK : Action.REPEAT;
                 }
