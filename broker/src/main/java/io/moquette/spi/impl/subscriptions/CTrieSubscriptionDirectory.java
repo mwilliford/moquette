@@ -227,7 +227,7 @@ public class CTrieSubscriptionDirectory implements ISubscriptionsDirectory {
     }
 
     private Action insert(String clientId, Topic topic, final INode inode, Topic fullpath) {
-         Token token = topic.headToken();
+        Token token = topic.headToken();
         if (!topic.isEmpty() && inode.mainNode().anyChildrenMatch(token)) {
             Topic remainingTopic = topic.exceptHeadToken();
             INode nextInode = inode.mainNode().childOf(token);
@@ -303,7 +303,7 @@ public class CTrieSubscriptionDirectory implements ISubscriptionsDirectory {
             Topic remainingTopic = topic.exceptHeadToken();
             INode nextInode = inode.mainNode().childOf(token);
             return remove(clientId, remainingTopic, nextInode, inode);
-        } else {  
+        } else {
             final CNode cnode = inode.mainNode();
             if (cnode instanceof TNode) {
                 // this inode is a tomb, has no clients and should be cleaned up

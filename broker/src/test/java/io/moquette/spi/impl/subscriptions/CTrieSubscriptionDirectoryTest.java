@@ -17,7 +17,6 @@
 import io.moquette.persistence.MemoryStorageService;
 import io.moquette.spi.ISessionsStore;
 import io.moquette.spi.impl.SessionsRepository;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -235,7 +234,7 @@ public class CTrieSubscriptionDirectoryTest {
     }
 
     @Test
-    public void testRemovalTwiceOffRoot() {
+    public void testRemovalInnerTopicOffRootSameClient() {
         sut.add(clientSubOnTopic("TempSensor1", "temp"));
         sut.add(clientSubOnTopic("TempSensor1", "temp/1"));
         
