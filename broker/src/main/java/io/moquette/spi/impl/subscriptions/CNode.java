@@ -73,7 +73,9 @@ class CNode {
     public void add(INode newINode) {
         this.children.add(newINode);
     }
-    public void remove(INode node) { this.children.remove(node); }
+    public void remove(INode node) {
+        this.children.remove(node);
+    }
 
     CNode addSubscription(String clientId, Topic topic) {
         this.subscriptions.add(new Subscription(clientId, topic));
