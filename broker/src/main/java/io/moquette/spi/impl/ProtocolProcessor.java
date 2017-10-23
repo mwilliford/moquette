@@ -953,6 +953,10 @@ public class ProtocolProcessor {
         return m_sessionsStore;
     }
 
+    public ISubscriptionsDirectory getSubscriptions() {
+        return subscriptions;
+    }
+
     public void shutdown() {
         if (m_interceptor != null)
             m_interceptor.stop();
