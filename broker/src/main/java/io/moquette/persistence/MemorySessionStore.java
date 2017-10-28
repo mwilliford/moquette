@@ -94,7 +94,7 @@ public class MemorySessionStore implements ISessionsStore, ISubscriptionsStore {
     @Override
     public void wipeSubscriptions(String clientID) {
         if (!sessions.containsKey(clientID)) {
-            LOG.error("Can't find the session for client <{}>", clientID);
+            LOG.info("Can't find the session for client, nothing to wipe <{}>", clientID);
             return;
         }
 
@@ -114,8 +114,8 @@ public class MemorySessionStore implements ISessionsStore, ISubscriptionsStore {
 
     @Override
     public void removeDurableSession(String clientId) {
-        this.sessions.remove(clientId);
         this.wipeSubscriptions(clientId);
+        this.sessions.remove(clientId);
     }
 
     @Override

@@ -67,7 +67,7 @@ public class SessionsRepository {
         }
 
         if (!this.sessions.contains(clientID)) {
-            LOG.warn("Session does not exist. CId={}", clientID);
+            LOG.info("Session does not exist. CId={}", clientID);
             return null;
         }
         PersistentSession storedSession = this.sessions.loadSessionByKey(clientID);
