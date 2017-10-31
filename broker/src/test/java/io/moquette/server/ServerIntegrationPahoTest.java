@@ -105,6 +105,38 @@ public class ServerIntegrationPahoTest {
         assertEquals("/topic", m_messagesCollector.getTopic());
     }
 
+    /**
+     *
+     * Some brokers interpret the Best Case as , qos=0 means we should still deliver retained if possible, just dont'
+     * bother to ACK.  This test added to test this condition
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testCleanSessionRetainClientLoginGetsRetainedTopic() throws Exception {
+        LOG.info("*** testCleanSessionRetainClientLoginGetsRetainedTopic ***");
+
+        String tmpDir = System.getProperty("java.io.tmpdir");
+
+        MqttClientPersistence dsSubscriberA = new MqttDefaultFilePersistence(tmpDir + File.separator + "subscriberA");
+
+        m_client.connect();
+        m_client.publish("a/b", "Hello world MQTT!!".getBytes(), 0, true);
+
+        MqttClient subscriberA = new MqttClient("tcp://localhost:1883", "SubscriberA", dsSubscriberA);
+        MessageCollector cbSubscriberA = new MessageCollector();
+        subscriberA.setCallback(cbSubscriberA);
+        subscriberA.connect();
+        subscriberA.subscribe("a/b", 1);
+        
+        MqttMessage messageOnA = cbSubscriberA.waitMessage(2);
+        assertNotNull(messageOnA);
+        assertEquals("Hello world MQTT!!", new String(messageOnA.getPayload()));
+        assertEquals(0, messageOnA.getQos());
+        subscriberA.disconnect();
+
+    }
+
 
     /**
      * subscriber A connect and subscribe on "a/b" QoS 1 subscriber B connect and subscribe on "a/+"

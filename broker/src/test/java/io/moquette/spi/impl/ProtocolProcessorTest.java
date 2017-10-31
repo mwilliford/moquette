@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static io.moquette.spi.impl.NettyChannelAssertions.assertConnAckAccepted;
+import static io.moquette.spi.impl.NettyChannelAssertions.assertEqualsConnAck;
 import static io.moquette.spi.impl.ProtocolProcessor.lowerQosToTheSubscriptionDesired;
 import static io.netty.handler.codec.mqtt.MqttQoS.AT_LEAST_ONCE;
 import static io.netty.handler.codec.mqtt.MqttQoS.AT_MOST_ONCE;
@@ -306,6 +307,8 @@ public class ProtocolProcessorTest extends AbstractProtocolProcessorCommonUtils 
     /**
      * Verify that receiving a publish with retained message and with Q0S = 0 clean the existing
      * retained messages for that topic.
+     *
+     * CHANGE - we now want QOS = 0 to store the retained message, we will send best effort
      */
     @Test
     public void testCleanRetainedStoreAfterAQoS0AndRetainedTrue() {
@@ -325,7 +328,7 @@ public class ProtocolProcessorTest extends AbstractProtocolProcessorCommonUtils 
 
         // Verify
         messages = m_messagesStore.searchMatching(key -> key.match(new Topic(FAKE_TOPIC)));
-        assertTrue(messages.isEmpty());
+        assertEquals(1, messages.size());
     }
 
     @Test

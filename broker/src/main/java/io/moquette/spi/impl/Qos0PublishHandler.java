@@ -68,8 +68,12 @@ class Qos0PublishHandler extends QosPublishHandler {
         this.publisher.publish2Subscribers(toStoreMsg, topic);
 
         if (msg.fixedHeader().isRetain()) {
-            // QoS == 0 && retain => clean old retained
-            m_messagesStore.cleanRetained(topic);
+            if (!msg.payload().isReadable()) {
+                m_messagesStore.cleanRetained(topic);
+            } else {
+                // before wasn't stored
+                m_messagesStore.storeRetained(topic, toStoreMsg);
+            }
         }
 
         m_interceptor.notifyTopicPublished(msg, clientID, username);
