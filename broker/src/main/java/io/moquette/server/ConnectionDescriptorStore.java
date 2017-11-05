@@ -127,7 +127,6 @@ public class ConnectionDescriptorStore implements IConnectionsManager {
 
     @Override
     public Collection<MqttSession> getSessions() {
-        LOG.info("Retrieving status of all sessions.");
         Collection<MqttSession> result = new ArrayList<>();
         for (ClientSession session : this.sessionsRepository.getAllSessions(true)) {
             result.add(buildMqttSession(session));
