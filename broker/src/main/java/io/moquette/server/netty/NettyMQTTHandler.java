@@ -40,6 +40,12 @@ public class NettyMQTTHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object message) {
         MqttMessage msg = (MqttMessage) message;
         try {
+            if (msg.fixedHeader() == null) {
+                final String clientID = NettyUtils.clientID(ctx.channel());
+                LOG.error("Processing MQTTNULL unexpected from {}, disconnect, cause: {}", clientID, ((MqttMessage) message).decoderResult().toString());
+                m_processor.processDisconnect(ctx.channel());
+                return;
+            }
             MqttMessageType messageType = msg.fixedHeader().messageType();
             LOG.debug("Processing MQTT message, type={}", messageType);
             switch (messageType) {
